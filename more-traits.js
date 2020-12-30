@@ -89,29 +89,16 @@ const TRAIT_KEY = {
 Hooks.once('setup', () => {
     patchTraits();
     mergeTraits();
-    console.log();
-    console.log('PF2EX CONFIG', CONFIG);
-    console.log('PF2EX featTraits', CONFIG.featTraits);
-    console.log('PF2EX ancestryTraits', CONFIG.ancestryTraits);
-    console.log('PF2EX traitsDescriptions', CONFIG.traitsDescriptions);
-    console.log('PF2EX PF2E featTraits', CONFIG.PF2E.featTraits);
-    console.log('PF2EX PF2E ancestryTraits', CONFIG.PF2E.ancestryTraits);
-    console.log(
-        'PF2EX PF2E traitsDescriptions',
-        CONFIG.PF2E.traitsDescriptions
-    );
 });
 
 function patchTraits() {
-    // CONFIG.featTraits.lava = 'PF2E.lava';
-    // CONFIG.PF2E.featTraits.lava = 'Lava';
     try {
         myPatchHelper(
             TRAIT_KEY.ancestryTraits,
-            'lava',
-            'TraitLava',
-            'Hot Lava',
-            'Hot hot hot'
+            'warforged',
+            'TraitWarforged',
+            'Warforged',
+            'Living contructs, created only to fight in a never ending war. The core of a warforged is a skeletal frame made of metal and stone with wood fibres acting as a muscular system'
         );
     } catch (e) {
         console.log('PF2EX', e.message);
@@ -123,8 +110,7 @@ function myPatchHelper(
     shortKey,
     pf2eKey,
     name,
-    description = '',
-    dangerZone = false
+    description = ''
 ) {
     CONFIG[configKey][shortKey] = `PF2E.${pf2eKey}`;
     CONFIG.PF2E[configKey][shortKey] = name;
@@ -140,57 +126,6 @@ function myPatchHelper(
         const descKey = 'TraitDescription' + pf2eKey.replace('Trait', '');
         CONFIG.traitsDescriptions[shortKey] = `PF2E.${descKey}`;
         CONFIG.PF2E.traitsDescriptions[shortKey] = description;
-    }
-
-    console.log('PF2EX', CONFIG[configKey][shortKey], CONFIG.PF2E[pf2eKey], {
-        configKey,
-        shortKey,
-        pf2eKey,
-        name,
-        description,
-    });
-
-    return;
-    const quarterKey = `Trait${capitalize(key)}`;
-    const configKeyKey = `${anchor}.${quarterKey}`;
-    console.log(
-        'PF2EX',
-        configKey in TRAIT_KEY,
-        configKey in CONFIG,
-        !(key in CONFIG[configKey]),
-        configKeyKey
-    );
-    if (
-        true ||
-        (configKey in TRAIT_KEY &&
-            configKey in CONFIG &&
-            !(key in CONFIG[configKey]))
-    ) {
-        //Update main ref
-        CONFIG[configKey][key] = configKeyKey;
-
-        //Update lang ref
-        CONFIG.PF2E[configKey][quarterKey] = name;
-
-        console.log(
-            'PF2EX',
-            'added entry',
-            {
-                configKey,
-                key,
-                name,
-                description,
-            },
-            CONFIG[configKey][key],
-            CONFIG.PF2E[configKey][quarterKey]
-        );
-    } else {
-        console.error('PF2EX', 'failed to add entry', {
-            configKey,
-            key,
-            name,
-            description,
-        });
     }
 }
 
