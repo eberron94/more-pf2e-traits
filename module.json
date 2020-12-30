@@ -1,0 +1,11 @@
+{
+    "name": "more-pf2e-traits",
+    "title": "More Pathfinder 2E Traits",
+    "description": "<p>Adds in a selection of traits to the Pathfinder 2E system.</p>",
+    "version": "0.1",
+    "author": "eberron94",
+    "esmodules": ["more-traits.js"],
+    "minimumCoreVersion": "0.7.6",
+    "compatibleCoreVersion": "0.7.9",
+    "systems": ["pf2e"]
+}
