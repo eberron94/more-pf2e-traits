@@ -9,5 +9,6 @@
     "compatibleCoreVersion": "0.7.9",
     "systems": ["pf2e"],
     "url": "https://github.com/eberron94/more-pf2e-traits",
-    "manifest": "https://raw.githubusercontent.com/eberron94/more-pf2e-traits/main/module.json"
+    "manifest": "https://raw.githubusercontent.com/eberron94/more-pf2e-traits/main/module.json",
+    "download":"https://github.com/eberron94/more-pf2e-traits/releases/download/v0.1/more-pf2e-traits-v0.1.zip"
 }
