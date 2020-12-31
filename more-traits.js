@@ -1,108 +1,64 @@
-const TRAIT_KEY = {
-    levels: 'levels',
-    abilities: 'abilities',
-    attributes: 'attributes',
-    dcAdjustments: 'dcAdjustments',
-    skills: 'skills',
-    martialSkills: 'martialSkills',
-    saves: 'saves',
-    currencies: 'currencies',
-    preciousMaterialGrades: 'preciousMaterialGrades',
-    preciousMaterials: 'preciousMaterials',
-    armorPotencyRunes: 'armorPotencyRunes',
-    armorResiliencyRunes: 'armorResiliencyRunes',
-    armorPropertyRunes: 'armorPropertyRunes',
-    weaponPotencyRunes: 'weaponPotencyRunes',
-    weaponStrikingRunes: 'weaponStrikingRunes',
-    weaponPropertyRunes: 'weaponPropertyRunes',
-    damageTypes: 'damageTypes',
-    resistanceTypes: 'resistanceTypes',
-    stackGroups: 'stackGroups',
-    weaknessTypes: 'weaknessTypes',
-    weaponDamage: 'weaponDamage',
-    healingTypes: 'healingTypes',
-    weaponTypes: 'weaponTypes',
-    weaponGroups: 'weaponGroups',
-    weaponDescriptions: 'weaponDescriptions',
-    usageTraits: 'usageTraits',
-    rarityTraits: 'rarityTraits',
-    spellTraditions: 'spellTraditions',
-    spellOtherTraits: 'spellOtherTraits',
-    magicTraditions: 'magicTraditions',
-    magicalSchools: 'magicalSchools',
-    spellSchools: 'spellSchools',
-    classTraits: 'classTraits',
-    ancestryTraits: 'ancestryTraits',
-    ancestryItemTraits: 'ancestryItemTraits',
-    weaponTraits: 'weaponTraits',
-    armorTraits: 'armorTraits',
-    equipmentTraits: 'equipmentTraits',
-    consumableTraits: 'consumableTraits',
-    spellTraits: 'spellTraits',
-    featTraits: 'featTraits',
-    monsterTraits: 'monsterTraits',
-    hazardTraits: 'hazardTraits',
-    traitsDescriptions: 'traitsDescriptions',
-    weaponHands: 'weaponHands',
-    itemBonuses: 'itemBonuses',
-    damageDice: 'damageDice',
-    damageDie: 'damageDie',
-    weaponRange: 'weaponRange',
-    weaponMAP: 'weaponMAP',
-    weaponReload: 'weaponReload',
-    armorTypes: 'armorTypes',
-    armorGroups: 'armorGroups',
-    consumableTypes: 'consumableTypes',
-    preparationType: 'preparationType',
-    areaTypes: 'areaTypes',
-    spellBasic: 'spellBasic',
-    areaSizes: 'areaSizes',
-    alignment: 'alignment',
-    attitude: 'attitude',
-    skillList: 'skillList',
-    spellComponents: 'spellComponents',
-    spellCategories: 'spellCategories',
-    spellTypes: 'spellTypes',
-    spellLevels: 'spellLevels',
-    featTypes: 'featTypes',
-    featActionTypes: 'featActionTypes',
-    actionTypes: 'actionTypes',
-    actionsNumber: 'actionsNumber',
-    actionCategories: 'actionCategories',
-    proficiencyLevels: 'proficiencyLevels',
-    heroPointLevels: 'heroPointLevels',
-    actorSizes: 'actorSizes',
-    speedTypes: 'speedTypes',
-    prerequisitePlaceholders: 'prerequisitePlaceholders',
-    senses: 'senses',
-    bulkTypes: 'bulkTypes',
-    conditionTypes: 'conditionTypes',
-    pfsFactions: 'pfsFactions',
-    pfsSchools: 'pfsSchools',
-    immunityTypes: 'immunityTypes',
-    languages: 'languages',
-    spellScalingModes: 'spellScalingModes',
-    attackEffects: 'attackEffects',
-    monsterAbilities: 'monsterAbilities',
-};
-
 Hooks.once('setup', () => {
-    patchTraits();
+    const listOfNewTraits = [
+        [
+            TRAIT_KEY.ancestryTraits,
+            'Warforged',
+            'Living contructs, created only to fight in a never ending war. The core of a warforged is a skeletal frame made of metal and stone with wood fibres acting as a muscular system.',
+        ],
+        [
+            TRAIT_KEY.ancestryTraits,
+            'Half-Elf',
+            'Humans with elven heritage.',
+        ],
+        [
+            TRAIT_KEY.ancestryTraits,
+            'Half-Orc',
+            'Humans with orcish heritage.',
+        ],
+        [
+            TRAIT_KEY.ancestryTraits,
+            'Shifter',
+            'An ancestry of weretouched individuals, their bodies are physically fit and lithe, they tend to move around in an animal like manner, crouching, springing and leaping.',
+        ],
+        [
+            TRAIT_KEY.ancestryTraits,
+            'Kalashtar',
+            'Being the combination of humans who willingly fused with quori souls, kalashtar look much like humans. The only real difference in kalashtar is their monastic behaviour. Growing up for the kalashtar is simply a physical process rather than an emotional or mental one. ',
+        ],
+        [
+            TRAIT_KEY.featTraits,
+            'Dragonmark',
+            'Physical manifestations of the Draconic Prophecy. They are more intricate than a birthmark and more distinct than a tattoo.',
+        ],
+    ];
+    
+    patchTraits(listOfNewTraits);
     mergeTraits();
 });
 
-function patchTraits() {
+function patchTraits(listOfNewTraits) {
     try {
-        myPatchHelper(
-            TRAIT_KEY.ancestryTraits,
-            'warforged',
-            'TraitWarforged',
-            'Warforged',
-            'Living contructs, created only to fight in a never ending war. The core of a warforged is a skeletal frame made of metal and stone with wood fibres acting as a muscular system'
-        );
+        listOfNewTraits.forEach((args) => makePatch(...args));
     } catch (e) {
-        console.log('PF2EX', e.message);
+        console.log('PF2EX error', e.message);
     }
+}
+
+function makePatch(type, name, description) {
+    const [shortKey, pf2eKey] = keyMaker(name);
+    myPatchHelper(type, shortKey, pf2eKey, name, description);
+}
+
+function keyMaker(name) {
+    const capitalize = (s) => {
+        if (typeof s !== 'string') return '';
+        return s.charAt(0).toUpperCase() + s.slice(1);
+    };
+
+    return [
+        String(name).toLowerCase().replace(/\s/g, ''),
+        capitalize(name).replace(/\s/g, ''),
+    ];
 }
 
 function myPatchHelper(
@@ -265,3 +221,91 @@ function mergeObject(
     // Return the object for use
     return original;
 }
+
+const TRAIT_KEY = {
+    levels: 'levels',
+    abilities: 'abilities',
+    attributes: 'attributes',
+    dcAdjustments: 'dcAdjustments',
+    skills: 'skills',
+    martialSkills: 'martialSkills',
+    saves: 'saves',
+    currencies: 'currencies',
+    preciousMaterialGrades: 'preciousMaterialGrades',
+    preciousMaterials: 'preciousMaterials',
+    armorPotencyRunes: 'armorPotencyRunes',
+    armorResiliencyRunes: 'armorResiliencyRunes',
+    armorPropertyRunes: 'armorPropertyRunes',
+    weaponPotencyRunes: 'weaponPotencyRunes',
+    weaponStrikingRunes: 'weaponStrikingRunes',
+    weaponPropertyRunes: 'weaponPropertyRunes',
+    damageTypes: 'damageTypes',
+    resistanceTypes: 'resistanceTypes',
+    stackGroups: 'stackGroups',
+    weaknessTypes: 'weaknessTypes',
+    weaponDamage: 'weaponDamage',
+    healingTypes: 'healingTypes',
+    weaponTypes: 'weaponTypes',
+    weaponGroups: 'weaponGroups',
+    weaponDescriptions: 'weaponDescriptions',
+    usageTraits: 'usageTraits',
+    rarityTraits: 'rarityTraits',
+    spellTraditions: 'spellTraditions',
+    spellOtherTraits: 'spellOtherTraits',
+    magicTraditions: 'magicTraditions',
+    magicalSchools: 'magicalSchools',
+    spellSchools: 'spellSchools',
+    classTraits: 'classTraits',
+    ancestryTraits: 'ancestryTraits',
+    ancestryItemTraits: 'ancestryItemTraits',
+    weaponTraits: 'weaponTraits',
+    armorTraits: 'armorTraits',
+    equipmentTraits: 'equipmentTraits',
+    consumableTraits: 'consumableTraits',
+    spellTraits: 'spellTraits',
+    featTraits: 'featTraits',
+    monsterTraits: 'monsterTraits',
+    hazardTraits: 'hazardTraits',
+    traitsDescriptions: 'traitsDescriptions',
+    weaponHands: 'weaponHands',
+    itemBonuses: 'itemBonuses',
+    damageDice: 'damageDice',
+    damageDie: 'damageDie',
+    weaponRange: 'weaponRange',
+    weaponMAP: 'weaponMAP',
+    weaponReload: 'weaponReload',
+    armorTypes: 'armorTypes',
+    armorGroups: 'armorGroups',
+    consumableTypes: 'consumableTypes',
+    preparationType: 'preparationType',
+    areaTypes: 'areaTypes',
+    spellBasic: 'spellBasic',
+    areaSizes: 'areaSizes',
+    alignment: 'alignment',
+    attitude: 'attitude',
+    skillList: 'skillList',
+    spellComponents: 'spellComponents',
+    spellCategories: 'spellCategories',
+    spellTypes: 'spellTypes',
+    spellLevels: 'spellLevels',
+    featTypes: 'featTypes',
+    featActionTypes: 'featActionTypes',
+    actionTypes: 'actionTypes',
+    actionsNumber: 'actionsNumber',
+    actionCategories: 'actionCategories',
+    proficiencyLevels: 'proficiencyLevels',
+    heroPointLevels: 'heroPointLevels',
+    actorSizes: 'actorSizes',
+    speedTypes: 'speedTypes',
+    prerequisitePlaceholders: 'prerequisitePlaceholders',
+    senses: 'senses',
+    bulkTypes: 'bulkTypes',
+    conditionTypes: 'conditionTypes',
+    pfsFactions: 'pfsFactions',
+    pfsSchools: 'pfsSchools',
+    immunityTypes: 'immunityTypes',
+    languages: 'languages',
+    spellScalingModes: 'spellScalingModes',
+    attackEffects: 'attackEffects',
+    monsterAbilities: 'monsterAbilities',
+};
